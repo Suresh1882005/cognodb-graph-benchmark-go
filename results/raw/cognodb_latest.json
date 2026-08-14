@@ -1,0 +1,156 @@
+{
+  "platform": "cognodb",
+  "display_name": "CognoDB Cloud (c0 free tier)",
+  "advertised_specs": {
+    "disk": "1 GB",
+    "ram": "256 MB",
+    "source": "assignment brief",
+    "tier_name": "c0 (free)",
+    "vcpu": "0.5 (burstable)"
+  },
+  "indexed_properties": [
+    "Person.id"
+  ],
+  "generated_at_utc": "2026-08-14T13:01:57Z",
+  "dataset": {
+    "nodes": 36692,
+    "edges": 367662,
+    "source": "SNAP email-Enron"
+  },
+  "bench_config": {
+    "iterations": 100,
+    "warmup": 20,
+    "concurrency_levels": [
+      1,
+      10,
+      40
+    ],
+    "mixed_duration_sec": 30,
+    "read_write_ratio": 0.8,
+    "traversal_sample_size": 50
+  },
+  "ingest": {
+    "nodes_loaded": 36692,
+    "edges_loaded": 367662,
+    "wall_clock_seconds": 114.604,
+    "nodes_per_sec": 320.16,
+    "edges_per_sec": 3208.1
+  },
+  "traversals": {
+    "1_hop": {
+      "summary": {
+        "n": 50,
+        "p50_ms": 245.759,
+        "p95_ms": 271.253,
+        "p99_ms": 276.021,
+        "min_ms": 225.664,
+        "max_ms": 276.936,
+        "mean_ms": 250.466
+      },
+      "cold_start_ms": 240.133
+    },
+    "2_hop": {
+      "summary": {
+        "n": 50,
+        "p50_ms": 255.464,
+        "p95_ms": 317.827,
+        "p99_ms": 432.655,
+        "min_ms": 232.522,
+        "max_ms": 482.778,
+        "mean_ms": 266.142
+      },
+      "cold_start_ms": 265.161
+    },
+    "3_hop": {
+      "summary": {
+        "n": 50,
+        "p50_ms": 438.811,
+        "p95_ms": 766.049,
+        "p99_ms": 826.203,
+        "min_ms": 240.924,
+        "max_ms": 872.439,
+        "mean_ms": 468.648
+      },
+      "cold_start_ms": 656.959
+    }
+  },
+  "lookups": {
+    "indexed_range_lookup": {
+      "summary": {
+        "n": 100,
+        "p50_ms": 273.945,
+        "p95_ms": 301.789,
+        "p99_ms": 306.797,
+        "min_ms": 255.042,
+        "max_ms": 384.852,
+        "mean_ms": 277.179
+      },
+      "cold_start_ms": 293.21
+    },
+    "point_lookup": {
+      "summary": {
+        "n": 100,
+        "p50_ms": 259.014,
+        "p95_ms": 278.738,
+        "p99_ms": 295.898,
+        "min_ms": 223.549,
+        "max_ms": 311.28,
+        "mean_ms": 254.904
+      },
+      "cold_start_ms": 240.479
+    }
+  },
+  "aggregation": {
+    "top10_out_degree": {
+      "n": 100,
+      "p50_ms": 1573.209,
+      "p95_ms": 1715.397,
+      "p99_ms": 1758.423,
+      "min_ms": 1469.565,
+      "max_ms": 1897.564,
+      "mean_ms": 1582.113
+    }
+  },
+  "mixed_workload": {
+    "1": {
+      "concurrency": 1,
+      "duration_sec": 30,
+      "total_ops": 121,
+      "throughput_qps": 4.03,
+      "latency": {
+        "n": 121,
+        "p50_ms": 249.039,
+        "p95_ms": 270.849,
+        "p99_ms": 290.718,
+        "min_ms": 228.435,
+        "max_ms": 295.715,
+        "mean_ms": 249.95
+      },
+      "read_write_ratio": 0.8
+    },
+    "10": {
+      "concurrency": 10,
+      "duration_sec": 30,
+      "total_ops": 1175,
+      "throughput_qps": 39.17,
+      "latency": {
+        "n": 1175,
+        "p50_ms": 249.322,
+        "p95_ms": 274.237,
+        "p99_ms": 288.632,
+        "min_ms": 225.29,
+        "max_ms": 1509.014,
+        "mean_ms": 256.558
+      },
+      "read_write_ratio": 0.8
+    }
+  },
+  "footprint": {
+    "observable": false,
+    "stored_bytes": 0,
+    "notes": "not observable on this tier/platform"
+  },
+  "caveats": [
+    "mixed workload partially failed: concurrency 40: ConnectivityError: Timeout while waiting for connection to any of [[db-e50e8842.databases.cognodb.com:7687]]: dial tcp 8.234.181.95:7687: i/o timeout"
+  ]
+}

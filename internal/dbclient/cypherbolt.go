@@ -137,30 +137,50 @@ func (c *CypherBoltClient) BulkLoad(ctx context.Context, nodeIDs []int64, edges 
 
 func (c *CypherBoltClient) Traversal(ctx context.Context, startID int64, hops int) (int64, error) {
 	var cypher string
+
 	switch hops {
 	case 1:
-		cypher = "MATCH (p:Person {id:$id})-[:EMAILED]->(x) RETURN count(DISTINCT x) AS c"
+		cypher = `
+			MATCH (p:Person {id: $id})-[:EMAILED]->(x)
+			RETURN count(DISTINCT x) AS c
+		`
+
 	case 2:
-		cypher = "MATCH (p:Person {id:$id})-[:EMAILED]->()-[:EMAILED]->(x) RETURN count(DISTINCT x) AS c LIMIT 10000"
+		cypher = `
+			MATCH (p:Person {id: $id})-[:EMAILED]->()-[:EMAILED]->(x)
+			WITH DISTINCT x
+			LIMIT 10000
+			RETURN count(x) AS c
+		`
+
 	case 3:
-		cypher = "MATCH (p:Person {id:$id})-[:EMAILED]->()-[:EMAILED]->()-[:EMAILED]->(x) RETURN count(DISTINCT x) AS c LIMIT 10000"
+		cypher = `
+			MATCH (p:Person {id: $id})-[:EMAILED]->()-[:EMAILED]->()-[:EMAILED]->(x)
+			WITH DISTINCT x
+			LIMIT 10000
+			RETURN count(x) AS c
+		`
+
 	default:
 		return 0, fmt.Errorf("only 1/2/3 hops are benchmarked, got %d", hops)
 	}
+
 	session := c.session(ctx)
 	defer session.Close(ctx)
+
 	result, err := session.Run(ctx, cypher, map[string]any{"id": startID})
 	if err != nil {
 		return 0, err
 	}
+
 	record, err := result.Single(ctx)
 	if err != nil {
 		return 0, err
 	}
+
 	raw, _ := record.Get("c")
 	return toInt64(raw), nil
 }
-
 func (c *CypherBoltClient) PointLookup(ctx context.Context, nodeID int64) (bool, error) {
 	session := c.session(ctx)
 	defer session.Close(ctx)
