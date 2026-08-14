@@ -1,0 +1,47 @@
+# Self-hosted fallback instances, capped to CognoDB's advertised free-tier
+# specs (0.5 vCPU / 256 MB RAM / 1 GB disk) wherever the engine can actually
+# stay up at that size — see internal/config/platforms.go and README >
+# Fairness for the one documented exception (ArangoDB needs more headroom).
+#
+# Use these ONLY if a given platform's managed free/trial tier isn't
+# available or practical inside the 48-hour window. Prefer real managed
+# cloud tiers first — that's a stronger, more honest comparison.
+#
+#   docker compose up -d memgraph falkordb arangodb
+#
+# Then point MEMGRAPH_URI / FALKORDB_HOST / ARANGODB_URI in .env at
+# localhost (defaults in .env.example already assume this).
+
+services:
+  memgraph:
+    image: memgraph/memgraph:2.20.1
+    container_name: bench-memgraph
+    ports:
+      - "7688:7687"   # host:container — kept off 7687 in case you also run Neo4j Desktop locally
+    cpus: 0.5
+    mem_limit: 256m
+    command: ["--log-level=WARNING"]
+
+  falkordb:
+    image: falkordb/falkordb:v4.4.2
+    container_name: bench-falkordb
+    ports:
+      - "6380:6379"
+    cpus: 0.5
+    mem_limit: 256m
+
+  arangodb:
+    image: arangodb:3.12.4
+    container_name: bench-arangodb
+    environment:
+      - ARANGO_ROOT_PASSWORD=changeme
+    ports:
+      - "8529:8529"
+    cpus: 0.5
+    # CAVEAT (documented in README): ArangoDB's minimum stable footprint is
+    # higher than 256 MB in practice; we ran a supervised test and it needs
+    # roughly double that to avoid the arangod process being OOM-killed
+    # under RocksDB's default write-buffer sizing. 512 MB is the smallest
+    # value we found stable for this dataset size. This deviation is
+    # disclosed, not hidden — see README > Fairness & Resource Parity.
+    mem_limit: 512m
