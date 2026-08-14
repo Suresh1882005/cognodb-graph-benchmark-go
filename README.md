@@ -280,9 +280,9 @@ The authoritative generated report is `results/RESULTS.md`. The tables below sum
 
 ### Storage / resource footprint
 
-| Platform | Stored bytes | Notes |
+| Platform | Stored MB | Notes |
 |---|---:|---|
-| CognoDB Cloud | — | Not reported by the current benchmark output |
+| CognoDB Cloud |718 MB | Reported by the current benchmark output |
 | Neo4j AuraDB Free | — | Pending |
 | Memgraph | — | Pending |
 | FalkorDB | — | Pending |
